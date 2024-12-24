@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Step Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #121212;
+            color: #ffffff;
+            overflow: hidden;
+        }
+        .form-container {
+            width: 50%;
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+            animation: float 5s infinite ease-in-out;
+        }
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+        .form-section {
+            display: none;
+        }
+        .form-section.active {
+            display: block;
+        }
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .navigation-buttons button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .navigation-buttons button.next {
+            background-color: #4caf50;
+            color: #ffffff;
+        }
+        .navigation-buttons button.prev {
+            background-color: #f44336;
+            color: #ffffff;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #333;
+            border-radius: 5px;
+            background: #2a2a2a;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <div class="form-section active" id="step-1">
+            <h2>Step 1: Personal Information</h2>
+            <label for="name">Name:</label>
+            <input type="text" id="name" placeholder="Enter your name">
+            <label for="email">Email:</label>
+            <input type="email" id="email" placeholder="Enter your email">
+            <label for="number">Phone Number:</label>
+            <input type="tel" id="number" placeholder="Enter your phone number">
+            <label for="education">Education:</label>
+            <input type="text" id="education" placeholder="Enter your education">
+            <label for="about">About You:</label>
+            <textarea id="about" placeholder="Tell us about yourself" rows="3"></textarea>
+        </div>
+
+        <div class="form-section" id="step-2">
+            <h2>Step 2: Address Details</h2>
+            <label for="address">Address:</label>
+            <input type="text" id="address" placeholder="Enter your address">
+            <label for="city">City:</label>
+            <input type="text" id="city" placeholder="Enter your city">
+            <label for="country">Country:</label>
+            <input type="text" id="country" placeholder="Enter your country">
+        </div>
+
+        <div class="form-section" id="step-3">
+            <h2>Step 3: Preferences</h2>
+            <label><input type="checkbox" id="newsletter"> Subscribe to newsletter</label><br>
+            <label><input type="checkbox" id="updates"> Receive updates</label>
+        </div>
+
+        <div class="form-section" id="step-4">
+            <h2>Step 4: Review & Submit</h2>
+            <p><strong>Name:</strong> <span id="review-name"></span></p>
+            <p><strong>Email:</strong> <span id="review-email"></span></p>
+            <p><strong>Phone Number:</strong> <span id="review-number"></span></p>
+            <p><strong>Education:</strong> <span id="review-education"></span></p>
+            <p><strong>About You:</strong> <span id="review-about"></span></p>
+            <p><strong>Address:</strong> <span id="review-address"></span></p>
+            <p><strong>City:</strong> <span id="review-city"></span></p>
+            <p><strong>Country:</strong> <span id="review-country"></span></p>
+            <p><strong>Preferences:</strong> <span id="review-preferences"></span></p>
+            <button type="button" id="submit">Submit</button>
+        </div>
+
+        <div class="navigation-buttons">
+            <button class="prev" id="prev-btn" disabled>Previous</button>
+            <button class="next" id="next-btn">Next</button>
+        </div>
+    </div>
+
+    <script>
+        const sections = document.querySelectorAll('.form-section');
+        const nextBtn = document.getElementById('next-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        let currentStep = 0;
+
+        function updateButtons() {
+            prevBtn.disabled = currentStep === 0;
+            nextBtn.textContent = currentStep === sections.length - 1 ? 'Review' : 'Next';
+        }
+
+        function showSection(step) {
+            sections.forEach((section, index) => {
+                section.classList.toggle('active', index === step);
+            });
+            updateButtons();
+        }
+
+        nextBtn.addEventListener('click', () => {
+            if (currentStep < sections.length - 1) {
+                currentStep++;
+                showSection(currentStep);
+                if (currentStep === sections.length - 1) {
+                    document.getElementById('review-name').textContent = document.getElementById('name').value;
+                    document.getElementById('review-email').textContent = document.getElementById('email').value;
+                    document.getElementById('review-number').textContent = document.getElementById('number').value;
+                    document.getElementById('review-education').textContent = document.getElementById('education').value;
+                    document.getElementById('review-about').textContent = document.getElementById('about').value;
+                    document.getElementById('review-address').textContent = document.getElementById('address').value;
+                    document.getElementById('review-city').textContent = document.getElementById('city').value;
+                    document.getElementById('review-country').textContent = document.getElementById('country').value;
+
+                    const preferences = [];
+                    if (document.getElementById('newsletter').checked) preferences.push('Newsletter');
+                    if (document.getElementById('updates').checked) preferences.push('Updates');
+                    document.getElementById('review-preferences').textContent = preferences.join(', ');
+                }
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentStep > 0) {
+                currentStep--;
+                showSection(currentStep);
+            }
+        });
+
+        showSection(currentStep);
+    </script>
+</body>
+</html>
